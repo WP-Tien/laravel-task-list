@@ -43,7 +43,7 @@
         </div>
 
         <div>
-            <button type="submit">Add Task</button>
+            <button type="submit">Edit Task</button>
         </div>
     </form>
 @endsection
