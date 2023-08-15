@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
+use \App\Models\Task;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,32 +24,40 @@ Route::get('/tasks', function () {
     // $tasks = App\Models\Task::all();
     // $tasks = App\Models\Task::latest()->where('completed', true)->get();
 
-    $tasks = App\Models\Task::latest()->get();
+    $tasks = Task::latest()->get();
 
     return view('index', [
         'tasks' => $tasks
     ]);
 })->name('task.index');
 
+// Create is the name
+Route::view('/tasks/create', 'create');
+
 Route::get('/tasks/{id}', function ($id) {
     // $task = \App\Models\Task::find($id);
-    $task = \App\Models\Task::findOrFail($id);
+    $task = Task::findOrFail($id);
 
     return view('show', ['task' => $task]);
 })->name('task.show');
 
-// Route::get('/hello', function () {
-//     return 'Hello';
-// })->name('hello');
+Route::post('/task', function (Request $request) {
+    // dd($request->all());
 
-// Route::get('/hallo', function () {
-//     // return redirect('/hello');
-//     return redirect()->route('hello');
-// });
+    $data = $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'required',
+        'long_description' => 'required'
+    ]);
 
-// Route::get('/greet/{name}', function ($name) {
-//     return 'Hello ' . $name . '!';
-// });
+    $task = new Task;
+    $task->title = $data['title'];
+    $task->description = $data['description'];
+    $task->long_description = $data['long_description'];
+    $task->save();
+
+    return redirect()->route('task.show', ['id' => $task->id])->with('success', 'Task created successfully!');
+})->name('task.store');
 
 Route::fallback(function () {
     return 'Still got somewhere!';
