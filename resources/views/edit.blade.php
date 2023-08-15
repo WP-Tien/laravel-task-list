@@ -14,7 +14,7 @@
 @section('content')
     {{-- {{ $errors }} --}}
     {{-- PUT ko support trong html form --}}
-    <form method="POST" action="{{ route('task.update', ['id' => $task->id]) }}">
+    <form method="POST" action="{{ route('task.update', ['task' => $task->id]) }}">
         @csrf
         @method('PUT')
 
